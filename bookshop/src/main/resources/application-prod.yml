@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    # 生产环境建议全部通过环境变量注入，避免明文凭据进入仓库。
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/bookshop?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:change-me}
+    driver-class-name: com.mysql.cj.jdbc.Driver

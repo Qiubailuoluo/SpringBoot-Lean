@@ -14,6 +14,9 @@ public class ApiResponse<T> {
     private boolean success;
     private String message;
     private T data;
+    private Long timestamp;
+    private String path;
+    private String traceId;
 
     public String getCode() {
         return code;
@@ -45,6 +48,30 @@ public class ApiResponse<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
     /**
@@ -89,6 +116,17 @@ public class ApiResponse<T> {
         response.setCode(code);
         response.setSuccess(false);
         response.setMessage(message);
+        return response;
+    }
+
+    /**
+     * 构建失败响应（附带异常发生时间和请求路径）。
+     */
+    public static <T> ApiResponse<T> fail(String code, String message, Long timestamp, String path, String traceId) {
+        ApiResponse<T> response = fail(code, message);
+        response.setTimestamp(timestamp);
+        response.setPath(path);
+        response.setTraceId(traceId);
         return response;
     }
 }
