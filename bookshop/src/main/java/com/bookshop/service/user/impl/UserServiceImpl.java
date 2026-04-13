@@ -1,7 +1,7 @@
 package com.bookshop.service.user.impl;
 
 import com.bookshop.common.enums.user.UserErrorCode;
-import com.bookshop.common.exception.BusinessException;
+import com.bookshop.exception.BusinessException;
 import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.dto.user.UserUpdateDTO;
 import com.bookshop.entity.user.User;

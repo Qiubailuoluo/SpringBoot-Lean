@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.bookshop.common.exception.BusinessException;
+import com.bookshop.exception.BusinessException;
 import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.entity.user.User;
 import com.bookshop.mapper.user.UserMapper;

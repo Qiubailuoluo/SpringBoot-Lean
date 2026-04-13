@@ -1,4 +1,4 @@
-package com.bookshop.common.exception;
+package com.bookshop.exception;
 
 /**
  * 业务异常。

@@ -1,10 +1,14 @@
-package com.bookshop.config;
+package com.bookshop.config.startup;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * 启动期数据库连接校验器。
+ * 作用：应用启动时主动验证数据源可用性，避免运行期才暴露连库问题。
+ */
 @Component
 public class DatabaseConnectionVerifier implements CommandLineRunner {
 

@@ -1,6 +1,6 @@
 package com.bookshop.controller.user;
 
-import com.bookshop.common.ApiResponse;
+import com.bookshop.common.response.ApiResponse;
 import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.dto.user.UserUpdateDTO;
 import com.bookshop.service.user.UserService;

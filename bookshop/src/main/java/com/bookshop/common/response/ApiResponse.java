@@ -1,4 +1,4 @@
-package com.bookshop.common;
+package com.bookshop.common.response;
 
 /**
  * 统一接口返回结构。

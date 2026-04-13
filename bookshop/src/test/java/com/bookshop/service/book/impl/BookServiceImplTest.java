@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.bookshop.common.exception.BusinessException;
+import com.bookshop.exception.BusinessException;
 import com.bookshop.entity.book.Book;
 import com.bookshop.mapper.book.BookMapper;
 import java.math.BigDecimal;

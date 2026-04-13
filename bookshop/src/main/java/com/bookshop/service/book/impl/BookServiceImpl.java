@@ -1,7 +1,7 @@
 package com.bookshop.service.book.impl;
 
 import com.bookshop.common.enums.book.BookErrorCode;
-import com.bookshop.common.exception.BusinessException;
+import com.bookshop.exception.BusinessException;
 import com.bookshop.dto.book.BookCreateDTO;
 import com.bookshop.dto.book.BookUpdateDTO;
 import com.bookshop.entity.book.Book;

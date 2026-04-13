@@ -1,6 +1,6 @@
-package com.bookshop.common.exception;
+package com.bookshop.exception;
 
-import com.bookshop.common.ApiResponse;
+import com.bookshop.common.response.ApiResponse;
 import com.bookshop.common.trace.TraceIdFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
@@ -19,9 +19,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    /**
-     * 处理业务异常，返回业务错误码。
-     */
     @ExceptionHandler(BusinessException.class)
     public ApiResponse<Void> handleBusinessException(BusinessException ex, HttpServletRequest request) {
         String traceId = String.valueOf(request.getAttribute(TraceIdFilter.TRACE_ID_KEY));
@@ -29,9 +26,6 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(ex.getCode(), ex.getMessage(), Instant.now().toEpochMilli(), request.getRequestURI(), traceId);
     }
 
-    /**
-     * 处理参数校验异常，返回首个校验失败信息。
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = "参数校验失败";
@@ -43,9 +37,6 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail("VALIDATION_400", message, Instant.now().toEpochMilli(), request.getRequestURI(), traceId);
     }
 
-    /**
-     * 兜底处理未知异常，避免堆栈信息直接暴露给客户端。
-     */
     @ExceptionHandler(Exception.class)
     public ApiResponse<Void> handleException(Exception ex, HttpServletRequest request) {
         String traceId = String.valueOf(request.getAttribute(TraceIdFilter.TRACE_ID_KEY));

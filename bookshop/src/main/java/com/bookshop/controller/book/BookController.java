@@ -1,6 +1,6 @@
 package com.bookshop.controller.book;
 
-import com.bookshop.common.ApiResponse;
+import com.bookshop.common.response.ApiResponse;
 import com.bookshop.dto.book.BookCreateDTO;
 import com.bookshop.dto.book.BookUpdateDTO;
 import com.bookshop.service.book.BookService;
