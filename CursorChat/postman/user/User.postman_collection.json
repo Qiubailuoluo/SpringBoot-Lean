@@ -39,7 +39,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"秋白\",\n  \"password\": \"123456\"\n}"
+          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"秋白\",\n  \"password\": \"abc12345\",\n  \"verifyTarget\": \"demo@example.com\",\n  \"verifyCode\": \"{{verifyCode}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/users",
@@ -141,7 +141,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"重复用户\",\n  \"password\": \"123456\"\n}"
+          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"重复用户\",\n  \"password\": \"abc12345\",\n  \"verifyTarget\": \"demo@example.com\",\n  \"verifyCode\": \"{{verifyCode}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/users",
@@ -163,6 +163,10 @@
     },
     {
       "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "verifyCode",
       "value": ""
     }
   ]

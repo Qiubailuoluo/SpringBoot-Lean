@@ -7,6 +7,7 @@
 - 鉴权说明：
   - `POST /api/users`（注册）允许匿名访问
   - 其余 `/api/users/**` 需 Header：`Authorization: Bearer {{accessToken}}`
+- 注册前建议先通过 `POST /api/auth/verification/mock-send` 获取模拟验证码（真实短信/邮箱厂商 API 暂不接入）。
 
 ## 1. 查询用户列表
 
@@ -24,7 +25,9 @@
 {
   "username": "qiubai",
   "displayName": "秋白",
-  "password": "123456"
+  "password": "abc12345",
+  "verifyTarget": "demo@example.com",
+  "verifyCode": "从mock-send响应复制"
 }
 ```
 
@@ -66,13 +69,33 @@
 {
   "username": "qiubai",
   "displayName": "重复用户",
-  "password": "123456"
+  "password": "abc12345",
+  "verifyTarget": "demo@example.com",
+  "verifyCode": "从mock-send响应复制"
 }
 ```
 
 - 预期：`code = USER_409`
 
-### 6.2 查询不存在用户
+### 6.2 验证码错误
+
+- Method: `POST`
+- URL: `{{baseUrl}}/api/users`
+- Body（故意传错 verifyCode）：
+
+```json
+{
+  "username": "u_error",
+  "displayName": "验证码错误",
+  "password": "abc12345",
+  "verifyTarget": "demo@example.com",
+  "verifyCode": "000000"
+}
+```
+
+- 预期：`code = USER_460`
+
+### 6.3 查询不存在用户
 
 - Method: `GET`
 - URL: `{{baseUrl}}/api/users/999999`

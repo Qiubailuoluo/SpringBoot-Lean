@@ -9,6 +9,7 @@ import com.bookshop.exception.BusinessException;
 import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.entity.user.User;
 import com.bookshop.mapper.user.UserMapper;
+import com.bookshop.service.user.RegistrationGuardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +31,15 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private RegistrationGuardService registrationGuardService;
+
     @InjectMocks
     private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userMapper, passwordEncoder);
+        userService = new UserServiceImpl(userMapper, passwordEncoder, registrationGuardService);
     }
 
     @Test
@@ -50,7 +54,7 @@ class UserServiceImplTest {
         dto.setDisplayName("秋白");
         dto.setPassword("123456");
 
-        BusinessException ex = assertThrows(BusinessException.class, () -> userService.createUser(dto));
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.createUser(dto, "127.0.0.1"));
         assertEquals("USER_409", ex.getCode());
     }
 

@@ -3,10 +3,13 @@ package com.bookshop.controller.login;
 import com.bookshop.common.response.ApiResponse;
 import com.bookshop.dto.login.LoginRequestDTO;
 import com.bookshop.dto.login.RefreshTokenRequestDTO;
+import com.bookshop.dto.login.VerifyCodeSendRequestDTO;
 import com.bookshop.service.login.LoginService;
+import com.bookshop.service.user.RegistrationGuardService;
 import com.bookshop.vo.login.LoginResultVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     private final LoginService loginService;
+    private final RegistrationGuardService registrationGuardService;
 
-    public LoginController(LoginService loginService) {
+    public LoginController(LoginService loginService, RegistrationGuardService registrationGuardService) {
         this.loginService = loginService;
+        this.registrationGuardService = registrationGuardService;
     }
 
     /**
@@ -40,6 +45,16 @@ public class LoginController {
     @PostMapping("/refresh")
     public ApiResponse<LoginResultVO> refresh(@Valid @RequestBody RefreshTokenRequestDTO requestDTO) {
         return ApiResponse.ok("刷新成功", loginService.refreshToken(requestDTO.getRefreshToken()));
+    }
+
+    /**
+     * 模拟发送验证码（开发环境）。
+     * 真实邮箱/短信厂商 API 暂不接入，此接口直接返回验证码用于联调。
+     */
+    @PostMapping("/verification/mock-send")
+    public ApiResponse<Map<String, String>> sendMockVerificationCode(@Valid @RequestBody VerifyCodeSendRequestDTO requestDTO) {
+        String code = registrationGuardService.sendMockCode(requestDTO.getTarget());
+        return ApiResponse.ok("验证码发送成功（模拟）", Map.of("target", requestDTO.getTarget(), "code", code));
     }
 
     /**

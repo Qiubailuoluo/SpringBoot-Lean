@@ -15,7 +15,7 @@ public interface UserService {
 
     UserVO getUserById(Long id);
 
-    UserVO createUser(UserCreateDTO createDTO);
+    UserVO createUser(UserCreateDTO createDTO, String clientIp);
 
     UserVO updateUser(UserUpdateDTO updateDTO);
 

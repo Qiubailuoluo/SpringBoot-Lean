@@ -41,7 +41,11 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/health", "/api/auth/login", "/api/auth/refresh")
+                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                                "/health",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/api/auth/verification/mock-send")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users")
                         .permitAll()

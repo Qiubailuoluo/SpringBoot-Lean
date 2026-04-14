@@ -6,6 +6,7 @@ import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.dto.user.UserUpdateDTO;
 import com.bookshop.entity.user.User;
 import com.bookshop.mapper.user.UserMapper;
+import com.bookshop.service.user.RegistrationGuardService;
 import com.bookshop.service.user.UserService;
 import com.bookshop.vo.user.UserVO;
 import java.util.List;
@@ -21,10 +22,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RegistrationGuardService registrationGuardService;
 
-    public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder,
+            RegistrationGuardService registrationGuardService) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.registrationGuardService = registrationGuardService;
     }
 
     @Override
@@ -42,7 +48,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO createUser(UserCreateDTO createDTO) {
+    public UserVO createUser(UserCreateDTO createDTO, String clientIp) {
+        registrationGuardService.checkRegisterRateLimit(clientIp);
+        registrationGuardService.verifyCodeOrThrow(createDTO.getVerifyTarget(), createDTO.getVerifyCode());
         User existed = userMapper.selectByUsername(createDTO.getUsername());
         if (existed != null) {
             throw new BusinessException(UserErrorCode.USERNAME_DUPLICATE.getCode(), UserErrorCode.USERNAME_DUPLICATE.getMessage());

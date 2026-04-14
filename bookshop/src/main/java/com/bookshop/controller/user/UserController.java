@@ -5,6 +5,7 @@ import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.dto.user.UserUpdateDTO;
 import com.bookshop.service.user.UserService;
 import com.bookshop.vo.user.UserVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ApiResponse<UserVO> create(@Valid @RequestBody UserCreateDTO createDTO) {
-        return ApiResponse.ok("新增成功", userService.createUser(createDTO));
+    public ApiResponse<UserVO> create(@Valid @RequestBody UserCreateDTO createDTO, HttpServletRequest request) {
+        return ApiResponse.ok("注册成功", userService.createUser(createDTO, getClientIp(request)));
     }
 
     @PutMapping
@@ -54,5 +55,13 @@ public class UserController {
     public ApiResponse<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ApiResponse.ok("删除成功");
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

@@ -6,6 +6,34 @@
   },
   "item": [
     {
+      "name": "Verification - Mock Send",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"target\": \"demo@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/verification/mock-send",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "verification",
+            "mock-send"
+          ]
+        }
+      }
+    },
+    {
       "name": "Login",
       "request": {
         "method": "POST",
