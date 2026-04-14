@@ -12,5 +12,5 @@ public interface VerificationCodeSender {
      * @param target 验证码目标（邮箱或手机号）
      * @return 实际发送的验证码（mock/real-stub 阶段用于联调）
      */
-    String generateAndSend(String target);
+    VerificationDispatchResult generateAndSend(String target);
 }

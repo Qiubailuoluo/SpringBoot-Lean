@@ -25,7 +25,8 @@
 }
 ```
 
-- 预期：`success: true`，`data.code` 返回 6 位验证码（真实厂商短信/邮箱 API 暂不接入，`real` 模式当前为占位实现）。
+- 预期：`success: true`，返回 `data.code`、`data.deliveryId`、`data.channel`、`data.mock`。  
+  （真实厂商短信/邮箱 API 暂不接入，`real` 模式当前为占位实现）
 
 ## 2. 登录
 

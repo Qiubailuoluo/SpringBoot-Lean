@@ -10,6 +10,8 @@ import com.bookshop.service.user.RegistrationGuardService;
 import com.bookshop.service.user.UserService;
 import com.bookshop.vo.user.UserVO;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RegistrationGuardService registrationGuardService;
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
         // 1 表示启用状态，作为初始化默认值。
         user.setStatus(1);
         userMapper.insert(user);
+        log.info("用户注册成功: username={}, ip={}", user.getUsername(), clientIp);
         return toVO(userMapper.selectById(user.getId()));
     }
 

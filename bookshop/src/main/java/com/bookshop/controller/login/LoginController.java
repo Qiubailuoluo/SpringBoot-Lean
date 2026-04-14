@@ -7,9 +7,9 @@ import com.bookshop.dto.login.VerifyCodeSendRequestDTO;
 import com.bookshop.service.login.LoginService;
 import com.bookshop.service.user.RegistrationGuardService;
 import com.bookshop.vo.login.LoginResultVO;
+import com.bookshop.vo.login.VerificationSendResultVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +32,7 @@ public class LoginController {
     }
 
     /**
-     * 登录：校验用户名与演示密码后，返回 access + refresh token。
+     * 登录：校验用户名与 BCrypt 密码后，返回 access + refresh token。
      */
     @PostMapping("/login")
     public ApiResponse<LoginResultVO> login(@Valid @RequestBody LoginRequestDTO requestDTO) {
@@ -52,9 +52,15 @@ public class LoginController {
      * 真实邮箱/短信厂商 API 暂不接入，此接口返回验证码用于联调。
      */
     @PostMapping({"/verification/send", "/verification/mock-send"})
-    public ApiResponse<Map<String, String>> sendVerificationCode(@Valid @RequestBody VerifyCodeSendRequestDTO requestDTO) {
-        String code = registrationGuardService.sendCode(requestDTO.getTarget());
-        return ApiResponse.ok("验证码发送成功（模拟）", Map.of("target", requestDTO.getTarget(), "code", code));
+    public ApiResponse<VerificationSendResultVO> sendVerificationCode(@Valid @RequestBody VerifyCodeSendRequestDTO requestDTO) {
+        var dispatchResult = registrationGuardService.sendCode(requestDTO.getTarget());
+        VerificationSendResultVO vo = new VerificationSendResultVO();
+        vo.setTarget(requestDTO.getTarget());
+        vo.setCode(dispatchResult.getCode());
+        vo.setDeliveryId(dispatchResult.getDeliveryId());
+        vo.setChannel(dispatchResult.getChannel());
+        vo.setMock(dispatchResult.isMock());
+        return ApiResponse.ok("验证码发送成功", vo);
     }
 
     /**
