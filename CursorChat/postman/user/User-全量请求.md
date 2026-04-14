@@ -7,7 +7,7 @@
 - 鉴权说明：
   - `POST /api/users`（注册）允许匿名访问
   - 其余 `/api/users/**` 需 Header：`Authorization: Bearer {{accessToken}}`
-- 注册前建议先通过 `POST /api/auth/verification/mock-send` 获取模拟验证码（真实短信/邮箱厂商 API 暂不接入）。
+- 注册前建议先通过 `POST /api/auth/verification/send` 获取验证码（当前为 mock/real-stub，真实短信/邮箱厂商 API 暂不接入）。
 
 ## 1. 查询用户列表
 

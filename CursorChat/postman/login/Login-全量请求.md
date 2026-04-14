@@ -8,7 +8,7 @@
   - `POST /api/auth/login` 返回 `access token` + `refresh token`
   - `POST /api/auth/refresh` 用 refresh token 换新 access token
   - `POST /api/auth/logout` 会将当前 access token 拉黑并清理 refresh token
-  - `POST /api/auth/verification/mock-send` 模拟发送验证码（返回验证码，便于测试）
+  - `POST /api/auth/verification/send` 发送验证码（当前按 `security.verification.mode` 走 `mock/real-stub`，返回验证码便于测试）
   - Redis 默认连接 `127.0.0.1:6379`（当前无密码）
   - 用户密码使用 `user_account.password_hash`（BCrypt）校验
   - `POST /api/users` 允许匿名创建用户（用于注册/初始化账号），其余 `/api/users/**` 默认需 Bearer token
@@ -16,7 +16,7 @@
 ## 1. 模拟发送验证码（开发联调）
 
 - Method: `POST`
-- URL: `{{baseUrl}}/api/auth/verification/mock-send`
+- URL: `{{baseUrl}}/api/auth/verification/send`
 - Body:
 
 ```json
@@ -25,7 +25,7 @@
 }
 ```
 
-- 预期：`success: true`，`data.code` 返回 6 位验证码（仅模拟，真实厂商短信/邮箱 API 暂不接入）。
+- 预期：`success: true`，`data.code` 返回 6 位验证码（真实厂商短信/邮箱 API 暂不接入，`real` 模式当前为占位实现）。
 
 ## 2. 登录
 

@@ -6,7 +6,7 @@
   },
   "item": [
     {
-      "name": "Verification - Mock Send",
+      "name": "Verification - Send",
       "request": {
         "method": "POST",
         "header": [
@@ -20,7 +20,7 @@
           "raw": "{\n  \"target\": \"demo@example.com\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/verification/mock-send",
+          "raw": "{{baseUrl}}/api/auth/verification/send",
           "host": [
             "{{baseUrl}}"
           ],
@@ -28,7 +28,7 @@
             "api",
             "auth",
             "verification",
-            "mock-send"
+            "send"
           ]
         }
       }

@@ -45,6 +45,7 @@ public class SecurityConfig {
                                 "/health",
                                 "/api/auth/login",
                                 "/api/auth/refresh",
+                                "/api/auth/verification/send",
                                 "/api/auth/verification/mock-send")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users")

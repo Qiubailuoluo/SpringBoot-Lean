@@ -2,14 +2,14 @@ package com.bookshop.service.user;
 
 import com.bookshop.common.enums.user.UserErrorCode;
 import com.bookshop.exception.BusinessException;
+import com.bookshop.service.user.verification.VerificationCodeSender;
 import java.time.Duration;
-import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
  * 注册安全守卫服务。
- * 作用：验证码模拟发送/校验与注册限流。
+ * 作用：验证码发送/校验与注册限流。
  */
 @Service
 public class RegistrationGuardService {
@@ -19,12 +19,14 @@ public class RegistrationGuardService {
     private static final String REGISTER_IP_LIMIT_PREFIX = "auth:register:ip:";
 
     private final StringRedisTemplate redisTemplate;
+    private final VerificationCodeSender verificationCodeSender;
 
-    public RegistrationGuardService(StringRedisTemplate redisTemplate) {
+    public RegistrationGuardService(StringRedisTemplate redisTemplate, VerificationCodeSender verificationCodeSender) {
         this.redisTemplate = redisTemplate;
+        this.verificationCodeSender = verificationCodeSender;
     }
 
-    public String sendMockCode(String target) {
+    public String sendCode(String target) {
         String sendLimitKey = VERIFY_SEND_LIMIT_PREFIX + target;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(sendLimitKey))) {
             throw new BusinessException(
@@ -32,7 +34,7 @@ public class RegistrationGuardService {
                     "验证码发送过于频繁，请60秒后重试");
         }
 
-        String code = String.format("%06d", ThreadLocalRandom.current().nextInt(0, 1_000_000));
+        String code = verificationCodeSender.generateAndSend(target);
         redisTemplate.opsForValue().set(VERIFY_CODE_PREFIX + target, code, Duration.ofMinutes(5));
         redisTemplate.opsForValue().set(sendLimitKey, "1", Duration.ofSeconds(60));
         return code;

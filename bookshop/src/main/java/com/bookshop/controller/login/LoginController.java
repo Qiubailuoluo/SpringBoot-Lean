@@ -48,12 +48,12 @@ public class LoginController {
     }
 
     /**
-     * 模拟发送验证码（开发环境）。
-     * 真实邮箱/短信厂商 API 暂不接入，此接口直接返回验证码用于联调。
+     * 发送验证码（当前为 mock/real-stub 可切换）。
+     * 真实邮箱/短信厂商 API 暂不接入，此接口返回验证码用于联调。
      */
-    @PostMapping("/verification/mock-send")
-    public ApiResponse<Map<String, String>> sendMockVerificationCode(@Valid @RequestBody VerifyCodeSendRequestDTO requestDTO) {
-        String code = registrationGuardService.sendMockCode(requestDTO.getTarget());
+    @PostMapping({"/verification/send", "/verification/mock-send"})
+    public ApiResponse<Map<String, String>> sendVerificationCode(@Valid @RequestBody VerifyCodeSendRequestDTO requestDTO) {
+        String code = registrationGuardService.sendCode(requestDTO.getTarget());
         return ApiResponse.ok("验证码发送成功（模拟）", Map.of("target", requestDTO.getTarget(), "code", code));
     }
 
