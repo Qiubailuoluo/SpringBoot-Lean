@@ -4,9 +4,9 @@
 说明 access/refresh 双令牌在当前实现中的职责分工。
 
 ## 代码位置
-- `bookshop/src/main/java/com/bookshop/service/login/JwtTokenService.java`
-- `bookshop/src/main/java/com/bookshop/service/login/impl/LoginServiceImpl.java`
-- `bookshop/src/main/java/com/bookshop/config/security/JwtProperties.java`
+- `java/com/bookshop/service/login/JwtTokenService.java`
+- `java/com/bookshop/service/login/impl/LoginServiceImpl.java`
+- `java/com/bookshop/config/security/JwtProperties.java`
 
 ## 令牌机制
 - 登录成功后签发 access + refresh。
@@ -20,4 +20,4 @@
 - `security.jwt.refresh-expire-seconds`
 
 ## 下一篇
-阅读 `30-安全与登录/03-Redis令牌缓存与黑名单.md`。
+阅读 [03-Redis令牌缓存与黑名单](./03-Redis令牌缓存与黑名单.md)。

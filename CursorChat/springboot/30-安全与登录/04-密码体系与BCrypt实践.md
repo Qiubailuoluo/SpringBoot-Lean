@@ -4,9 +4,9 @@
 说明密码在本项目中的存储与校验策略，避免明文与弱加密风险。
 
 ## 代码位置
-- `bookshop/src/main/java/com/bookshop/config/security/SecurityConfig.java`
-- `bookshop/src/main/java/com/bookshop/service/login/impl/LoginServiceImpl.java`
-- `bookshop/src/main/resources/sql/user_account_password_migration.sql`
+- `java/com/bookshop/config/security/SecurityConfig.java`
+- `java/com/bookshop/service/login/impl/LoginServiceImpl.java`
+- `resources/sql/user_account_password_migration.sql`
 
 ## 实现现状
 - `SecurityConfig` 提供 `PasswordEncoder`：`BCryptPasswordEncoder`。
@@ -19,4 +19,4 @@
 - 未来可增加密码复杂度与失效周期策略。
 
 ## 下一篇
-阅读 `30-安全与登录/05-登录鉴权时序与失败场景.md`。
+阅读 [05-登录鉴权时序与失败场景](./05-登录鉴权时序与失败场景.md)。

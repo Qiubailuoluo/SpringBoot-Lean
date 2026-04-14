@@ -14,17 +14,17 @@
 阅读提示：先拿 `traceId` 再查日志，按异常层次定位到 DTO、Service 或 Mapper/SQL。
 ```mermaid
 flowchart TD
-apiError[ApiErrorFromClient] --> getTraceId[GetTraceId]
-getTraceId --> searchLog[SearchLogByTraceId]
-searchLog --> findCode[FindErrorCodeAndStack]
-findCode --> locateLayer{LocateLayer}
-locateLayer -->|Validation| checkDto[CheckDtoValidation]
-locateLayer -->|Business| checkService[CheckServiceRule]
-locateLayer -->|System| checkMapperSql[CheckMapperAndSql]
-checkDto --> retest[Retest]
+apiError[ApiErrorFromClient(客户端接口报错)] --> getTraceId[GetTraceId(获取traceId)]
+getTraceId --> searchLog[SearchLogByTraceId(按traceId查日志)]
+searchLog --> findCode[FindErrorCodeAndStack(定位错误码与堆栈)]
+findCode --> locateLayer{LocateLayer(定位异常层级)}
+locateLayer -->|Validation(参数校验层)| checkDto[CheckDtoValidation(检查DTO校验)]
+locateLayer -->|Business(业务层)| checkService[CheckServiceRule(检查服务规则)]
+locateLayer -->|System(系统层)| checkMapperSql[CheckMapperAndSql(检查Mapper与SQL)]
+checkDto --> retest[Retest(复测验证)]
 checkService --> retest
 checkMapperSql --> retest
-retest --> closeIssue[CloseIssue]
+retest --> closeIssue[CloseIssue(关闭问题)]
 ```
 ## 图解摘要
 - 排障入口统一是 `traceId`，先定位日志再判断问题层次。
@@ -32,8 +32,8 @@ retest --> closeIssue[CloseIssue]
 - 修复后必须回到复测节点确认问题闭环。
 
 ## 对应源码入口
-- `bookshop/src/main/java/com/bookshop/common/trace/TraceIdFilter.java`
-- `bookshop/src/main/java/com/bookshop/exception/GlobalExceptionHandler.java`
+- `java/com/bookshop/common/trace/TraceIdFilter.java`
+- `java/com/bookshop/exception/GlobalExceptionHandler.java`
 
 ## 常见组合
 - `VALIDATION_400` + 字段错误：多为 DTO 注解或前端字段名问题。
@@ -41,4 +41,4 @@ retest --> closeIssue[CloseIssue]
 - `SYSTEM_500`：优先看完整堆栈首个业务触发点。
 
 ## 下一篇
-阅读 `70-日志与观测/04-APM接入预案.md`。
+阅读 [04-APM接入预案](./04-APM接入预案.md)。

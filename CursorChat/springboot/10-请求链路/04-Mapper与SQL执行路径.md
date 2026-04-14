@@ -4,10 +4,10 @@
 说明请求如何从 Service 进入 MyBatis Mapper 并执行真实 SQL。
 
 ## 代码位置
-- 图书 Mapper：`bookshop/src/main/java/com/bookshop/mapper/book/BookMapper.java`
-- 用户 Mapper：`bookshop/src/main/java/com/bookshop/mapper/user/UserMapper.java`
-- SQL 初始化：`bookshop/src/main/resources/sql/book_info.sql`、`bookshop/src/main/resources/sql/user_account.sql`
-- MyBatis 配置：`bookshop/src/main/resources/application.yml`
+- 图书 Mapper：`java/com/bookshop/mapper/book/BookMapper.java`
+- 用户 Mapper：`java/com/bookshop/mapper/user/UserMapper.java`
+- SQL 初始化：`resources/sql/book_info.sql`、`resources/sql/user_account.sql`
+- MyBatis 配置：`resources/application.yml`
 
 ## 执行路径
 1. Service 调用 Mapper 接口方法。
@@ -19,4 +19,4 @@
 - 当前未使用 Flyway/Liquibase，表结构演进通过 SQL 脚本管理。
 
 ## 下一篇
-阅读 `10-请求链路/05-统一响应与TraceId流转.md`。
+阅读 [05-统一响应与TraceId流转](./05-统一响应与TraceId流转.md)。
