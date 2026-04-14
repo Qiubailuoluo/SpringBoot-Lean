@@ -76,6 +76,10 @@ public class ApiResponse<T> {
 
     /**
      * 构建成功响应（无 data）。
+     *
+     * @param message 成功提示文案
+     * @param <T>     data 类型占位
+     * @return 仅含成功标记与 message 的响应
      */
     public static <T> ApiResponse<T> ok(String message) {
         ApiResponse<T> response = new ApiResponse<>();
@@ -87,6 +91,11 @@ public class ApiResponse<T> {
 
     /**
      * 构建成功响应（包含 data）。
+     *
+     * @param message 成功提示文案
+     * @param data    业务数据
+     * @param <T>     data 类型
+     * @return 成功响应
      */
     public static <T> ApiResponse<T> ok(String message, T data) {
         ApiResponse<T> response = new ApiResponse<>();
@@ -98,7 +107,10 @@ public class ApiResponse<T> {
     }
 
     /**
-     * 构建失败响应。
+     * 构建失败响应（无业务错误码，code 为 FAIL）。
+     *
+     * @param message 失败说明
+     * @param <T>     data 类型占位
      */
     public static <T> ApiResponse<T> fail(String message) {
         ApiResponse<T> response = new ApiResponse<>();
@@ -110,6 +122,10 @@ public class ApiResponse<T> {
 
     /**
      * 构建失败响应（带业务错误码）。
+     *
+     * @param code    如 VALIDATION_400、BOOK_404
+     * @param message 可读说明
+     * @param <T>     data 类型占位
      */
     public static <T> ApiResponse<T> fail(String code, String message) {
         ApiResponse<T> response = new ApiResponse<>();
@@ -120,7 +136,14 @@ public class ApiResponse<T> {
     }
 
     /**
-     * 构建失败响应（附带异常发生时间和请求路径）。
+     * 构建失败响应（附带时间戳、请求路径与 traceId，供全局异常处理器使用）。
+     *
+     * @param code      业务或系统错误码
+     * @param message   可读说明
+     * @param timestamp 毫秒时间戳
+     * @param path      请求 URI
+     * @param traceId   与 MDC / 响应头一致的链路 ID
+     * @param <T>       data 类型占位
      */
     public static <T> ApiResponse<T> fail(String code, String message, Long timestamp, String path, String traceId) {
         ApiResponse<T> response = fail(code, message);

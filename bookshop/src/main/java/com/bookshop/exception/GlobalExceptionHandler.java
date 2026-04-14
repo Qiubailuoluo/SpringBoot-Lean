@@ -19,6 +19,9 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**
+     * @return 带业务错误码与 traceId 的失败响应
+     */
     @ExceptionHandler(BusinessException.class)
     public ApiResponse<Void> handleBusinessException(BusinessException ex, HttpServletRequest request) {
         String traceId = String.valueOf(request.getAttribute(TraceIdFilter.TRACE_ID_KEY));
@@ -26,6 +29,9 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(ex.getCode(), ex.getMessage(), Instant.now().toEpochMilli(), request.getRequestURI(), traceId);
     }
 
+    /**
+     * 将 Bean Validation 校验失败转为 {@code VALIDATION_400}。
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = "参数校验失败";
@@ -37,6 +43,9 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail("VALIDATION_400", message, Instant.now().toEpochMilli(), request.getRequestURI(), traceId);
     }
 
+    /**
+     * 兜底系统异常，避免堆栈信息直接暴露给客户端。
+     */
     @ExceptionHandler(Exception.class)
     public ApiResponse<Void> handleException(Exception ex, HttpServletRequest request) {
         String traceId = String.valueOf(request.getAttribute(TraceIdFilter.TRACE_ID_KEY));

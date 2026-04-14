@@ -8,6 +8,10 @@ public class BusinessException extends RuntimeException {
 
     private final String code;
 
+    /**
+     * @param code    与 {@link com.bookshop.common.response.ApiResponse} 约定的错误码字符串
+     * @param message 对外或可读的异常说明
+     */
     public BusinessException(String code, String message) {
         super(message);
         this.code = code;
