@@ -16,4 +16,7 @@ public class UserCreateDTO {
     @NotBlank(message = "显示名称不能为空")
     private String displayName;
 
+    @NotBlank(message = "密码不能为空")
+    private String password;
+
 }

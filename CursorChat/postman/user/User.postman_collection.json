@@ -9,7 +9,12 @@
       "name": "User - List",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/users",
           "host": [
@@ -34,7 +39,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"秋白\"\n}"
+          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"秋白\",\n  \"password\": \"123456\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/users",
@@ -52,7 +57,12 @@
       "name": "User - GetById",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/users/1",
           "host": [
@@ -71,6 +81,10 @@
       "request": {
         "method": "PUT",
         "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
           {
             "key": "Content-Type",
             "value": "application/json"
@@ -96,7 +110,12 @@
       "name": "User - Delete",
       "request": {
         "method": "DELETE",
-        "header": [],
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/users/1",
           "host": [
@@ -122,7 +141,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"重复用户\"\n}"
+          "raw": "{\n  \"username\": \"qiubai\",\n  \"displayName\": \"重复用户\",\n  \"password\": \"123456\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/users",
@@ -141,6 +160,10 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:8080"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
     }
   ]
 }

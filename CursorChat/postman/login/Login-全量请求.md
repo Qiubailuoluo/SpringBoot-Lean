@@ -1,12 +1,18 @@
-# Login 模块 Postman 全量请求（骨架）
+# Login 模块 Postman 全量请求（JWT + Redis）
 
 ## 0. 基础信息
 
 - Base URL: `http://localhost:8080`
 - 统一 Header（含 Body 的请求）: `Content-Type: application/json`
-- 当前为**占位实现**：不查库、不签发 JWT；成功响应 `code` 为 `SUCCESS`，`data` 内 `token` / `expiresIn` 为 `null`。
+- 当前实现为 **JWT + Redis 最小闭环**：
+  - `POST /api/auth/login` 返回 `access token` + `refresh token`
+  - `POST /api/auth/refresh` 用 refresh token 换新 access token
+  - `POST /api/auth/logout` 会将当前 access token 拉黑并清理 refresh token
+  - Redis 默认连接 `127.0.0.1:6379`（当前无密码）
+  - 用户密码使用 `user_account.password_hash`（BCrypt）校验
+  - `POST /api/users` 允许匿名创建用户（用于注册/初始化账号），其余 `/api/users/**` 默认需 Bearer token
 
-## 1. 登录（占位）
+## 1. 登录
 
 - Method: `POST`
 - URL: `{{baseUrl}}/api/auth/login`
@@ -14,26 +20,43 @@
 
 ```json
 {
-  "username": "demo",
-  "password": "any"
+  "username": "qiubai",
+  "password": "123456"
 }
 ```
 
-- 预期：`success: true`，`data.message` 含占位说明，`data.token` 与 `data.expiresIn` 为 `null`。
+- 预期：`success: true`，返回 `data.token`、`data.refreshToken`、`data.expiresIn`、`data.tokenType=Bearer`。
 
-## 2. 登出（占位）
+## 2. 刷新 Token
+
+- Method: `POST`
+- URL: `{{baseUrl}}/api/auth/refresh`
+- Body:
+
+```json
+{
+  "refreshToken": "从登录响应中复制"
+}
+```
+
+- 预期：`success: true`，返回新的 `data.token`。
+
+## 3. 登出
 
 - Method: `POST`
 - URL: `{{baseUrl}}/api/auth/logout`
+- Header:
+  - `Authorization: Bearer {{accessToken}}`
 - Body: 无
 
-- 预期：`success: true`，提示骨架登出已接通。
+- 预期：`success: true`，再次携带同一 access token 访问受保护接口将被拒绝。
 
-## 3. 校验失败示例（可选）
+## 4. 鉴权失败示例（建议）
 
-- 请求体省略 `username` 或 `password`，或传空字符串。
-- 预期：`code = VALIDATION_400`（以全局校验为准）。
+- 登录密码错误：`code = LOGIN_401`
+- refresh token 失效或伪造：`code = LOGIN_498`
+- 受保护接口未带 Bearer token：`code = LOGIN_498`
 
-## 4. TraceId
+## 5. TraceId
 
 - 响应头：`X-Trace-Id` 与失败时响应体中的 `traceId` 规则与 Book/User 模块一致。

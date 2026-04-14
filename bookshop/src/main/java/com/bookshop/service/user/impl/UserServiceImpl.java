@@ -9,6 +9,7 @@ import com.bookshop.mapper.user.UserMapper;
 import com.bookshop.service.user.UserService;
 import com.bookshop.vo.user.UserVO;
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,6 +49,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = new User();
         user.setUsername(createDTO.getUsername());
+        user.setPasswordHash(passwordEncoder.encode(createDTO.getPassword()));
         user.setDisplayName(createDTO.getDisplayName());
         // 1 表示启用状态，作为初始化默认值。
         user.setStatus(1);

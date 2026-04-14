@@ -16,18 +16,18 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface UserMapper {
 
-    @Select("SELECT id, username, display_name, status, created_at, updated_at FROM user_account ORDER BY id DESC")
+    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account ORDER BY id DESC")
     List<User> selectAll();
 
-    @Select("SELECT id, username, display_name, status, created_at, updated_at FROM user_account WHERE id = #{id}")
+    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE id = #{id}")
     User selectById(Long id);
 
-    @Select("SELECT id, username, display_name, status, created_at, updated_at FROM user_account WHERE username = #{username}")
+    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE username = #{username}")
     User selectByUsername(String username);
 
     @Insert("""
-            INSERT INTO user_account(username, display_name, status, created_at, updated_at)
-            VALUES(#{username}, #{displayName}, #{status}, NOW(), NOW())
+            INSERT INTO user_account(username, password_hash, display_name, status, created_at, updated_at)
+            VALUES(#{username}, #{passwordHash}, #{displayName}, #{status}, NOW(), NOW())
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(User user);

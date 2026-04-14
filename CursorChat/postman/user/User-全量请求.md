@@ -4,6 +4,9 @@
 
 - Base URL: `http://localhost:8080`
 - 统一 Header: `Content-Type: application/json`
+- 鉴权说明：
+  - `POST /api/users`（注册）允许匿名访问
+  - 其余 `/api/users/**` 需 Header：`Authorization: Bearer {{accessToken}}`
 
 ## 1. 查询用户列表
 
@@ -20,7 +23,8 @@
 ```json
 {
   "username": "qiubai",
-  "displayName": "秋白"
+  "displayName": "秋白",
+  "password": "123456"
 }
 ```
 
@@ -61,7 +65,8 @@
 ```json
 {
   "username": "qiubai",
-  "displayName": "重复用户"
+  "displayName": "重复用户",
+  "password": "123456"
 }
 ```
 

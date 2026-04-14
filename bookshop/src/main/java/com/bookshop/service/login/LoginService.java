@@ -5,20 +5,22 @@ import com.bookshop.vo.login.LoginResultVO;
 
 /**
  * 登录业务接口。
- * 作用：定义认证相关能力；当前为占位实现，不访问数据库、不签发 JWT。
+ * 作用：定义认证相关能力（登录、刷新、登出）。
  */
 public interface LoginService {
 
     /**
-     * 登录（骨架占位）。
-     * 输入：用户名与密码（仅校验 DTO 非空，不做真实校验）。
-     * 输出：说明性文案与空的 token 字段。
+     * 登录。
      */
     LoginResultVO login(LoginRequestDTO requestDTO);
 
     /**
-     * 登出（骨架占位）。
-     * 当前无服务端会话与 Token 黑名单，仅预留接口形态。
+     * 刷新 access token。
      */
-    void logout();
+    LoginResultVO refreshToken(String refreshToken);
+
+    /**
+     * 登出。
+     */
+    void logout(String accessToken);
 }

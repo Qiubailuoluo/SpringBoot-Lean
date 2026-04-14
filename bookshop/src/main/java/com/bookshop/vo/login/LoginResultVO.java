@@ -4,17 +4,23 @@ import lombok.Data;
 
 /**
  * 登录结果 VO。
- * 作用：对外返回登录结果占位结构；token 等字段在 JWT 接入后填充。
+ * 作用：对外返回登录凭据（access + refresh）与有效期。
  */
 @Data
 public class LoginResultVO {
 
-    /** 骨架阶段说明文案，便于联调时理解当前进度。 */
+    /** 登录结果说明。 */
     private String message;
 
-    /** 访问令牌，骨架阶段固定为 null。 */
+    /** 访问令牌（Bearer access token）。 */
     private String token;
 
-    /** 过期时间（秒），骨架阶段固定为 null。 */
+    /** 刷新令牌（用于续签 access token）。 */
+    private String refreshToken;
+
+    /** 过期时间（秒），表示 access token 过期秒数。 */
     private Long expiresIn;
+
+    /** 令牌类型，固定为 Bearer。 */
+    private String tokenType;
 }
