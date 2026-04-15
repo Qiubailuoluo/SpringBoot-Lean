@@ -46,7 +46,10 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/refresh",
                                 "/api/auth/verification/send",
-                                "/api/auth/verification/mock-send")
+                                "/api/auth/verification/mock-send",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users")
                         .permitAll()

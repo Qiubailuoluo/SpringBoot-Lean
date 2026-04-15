@@ -109,6 +109,44 @@
           ]
         }
       }
+    },
+    {
+      "name": "Audit - Verification Recent",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/audit/verification/recent?limit=20&target={{verifyTarget}}&success=true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "audit",
+            "verification",
+            "recent"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "20"
+            },
+            {
+              "key": "target",
+              "value": "{{verifyTarget}}"
+            },
+            {
+              "key": "success",
+              "value": "true"
+            }
+          ]
+        }
+      }
     }
   ],
   "variable": [
@@ -123,6 +161,10 @@
     {
       "key": "refreshToken",
       "value": ""
+    },
+    {
+      "key": "verifyTarget",
+      "value": "demo@example.com"
     }
   ]
 }

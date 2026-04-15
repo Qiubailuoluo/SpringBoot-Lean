@@ -5,6 +5,8 @@ import com.bookshop.dto.user.UserCreateDTO;
 import com.bookshop.dto.user.UserUpdateDTO;
 import com.bookshop.service.user.UserService;
 import com.bookshop.vo.user.UserVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User", description = "用户管理接口")
 public class UserController {
 
     private final UserService userService;
@@ -32,26 +35,31 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "查询用户列表")
     public ApiResponse<List<UserVO>> list() {
         return ApiResponse.ok("查询成功", userService.listUsers());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "按 ID 查询用户")
     public ApiResponse<UserVO> getById(@PathVariable Long id) {
         return ApiResponse.ok("查询成功", userService.getUserById(id));
     }
 
     @PostMapping
+    @Operation(summary = "注册用户（开放接口）")
     public ApiResponse<UserVO> create(@Valid @RequestBody UserCreateDTO createDTO, HttpServletRequest request) {
         return ApiResponse.ok("注册成功", userService.createUser(createDTO, getClientIp(request)));
     }
 
     @PutMapping
+    @Operation(summary = "更新用户信息")
     public ApiResponse<UserVO> update(@Valid @RequestBody UserUpdateDTO updateDTO) {
         return ApiResponse.ok("更新成功", userService.updateUser(updateDTO));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "删除用户")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ApiResponse.ok("删除成功");

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+  flyway:
+    enabled: false
+
+security:
+  jwt:
+    secret: bXlfYm9va3Nob3BfZGVtb19qd3Rfc2VjcmV0X2tleV8yMDI2XzA0XzE0
+    access-expire-seconds: 1800
+    refresh-expire-seconds: 604800

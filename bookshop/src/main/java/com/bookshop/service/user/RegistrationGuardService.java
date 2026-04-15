@@ -2,6 +2,7 @@ package com.bookshop.service.user;
 
 import com.bookshop.common.enums.user.UserErrorCode;
 import com.bookshop.exception.BusinessException;
+import com.bookshop.service.user.audit.VerificationDispatchAuditService;
 import com.bookshop.service.user.verification.VerificationCodeSender;
 import com.bookshop.service.user.verification.VerificationDispatchResult;
 import java.time.Duration;
@@ -24,30 +25,42 @@ public class RegistrationGuardService {
 
     private final StringRedisTemplate redisTemplate;
     private final VerificationCodeSender verificationCodeSender;
+    private final VerificationDispatchAuditService verificationDispatchAuditService;
 
-    public RegistrationGuardService(StringRedisTemplate redisTemplate, VerificationCodeSender verificationCodeSender) {
+    public RegistrationGuardService(
+            StringRedisTemplate redisTemplate,
+            VerificationCodeSender verificationCodeSender,
+            VerificationDispatchAuditService verificationDispatchAuditService) {
         this.redisTemplate = redisTemplate;
         this.verificationCodeSender = verificationCodeSender;
+        this.verificationDispatchAuditService = verificationDispatchAuditService;
     }
 
     public VerificationDispatchResult sendCode(String target) {
         String sendLimitKey = VERIFY_SEND_LIMIT_PREFIX + target;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(sendLimitKey))) {
+            verificationDispatchAuditService.recordFailure(target, "验证码发送过于频繁");
             throw new BusinessException(
                     UserErrorCode.REGISTER_TOO_FREQUENT.getCode(),
                     "验证码发送过于频繁，请60秒后重试");
         }
 
-        VerificationDispatchResult dispatchResult = verificationCodeSender.generateAndSend(target);
-        redisTemplate.opsForValue().set(VERIFY_CODE_PREFIX + target, dispatchResult.getCode(), Duration.ofMinutes(5));
-        redisTemplate.opsForValue().set(sendLimitKey, "1", Duration.ofSeconds(60));
-        log.info(
-                "验证码发送成功: target={}, deliveryId={}, channel={}, mock={}",
-                target,
-                dispatchResult.getDeliveryId(),
-                dispatchResult.getChannel(),
-                dispatchResult.isMock());
-        return dispatchResult;
+        try {
+            VerificationDispatchResult dispatchResult = verificationCodeSender.generateAndSend(target);
+            redisTemplate.opsForValue().set(VERIFY_CODE_PREFIX + target, dispatchResult.getCode(), Duration.ofMinutes(5));
+            redisTemplate.opsForValue().set(sendLimitKey, "1", Duration.ofSeconds(60));
+            verificationDispatchAuditService.recordSuccess(target, dispatchResult);
+            log.info(
+                    "验证码发送成功: target={}, deliveryId={}, channel={}, mock={}",
+                    target,
+                    dispatchResult.getDeliveryId(),
+                    dispatchResult.getChannel(),
+                    dispatchResult.isMock());
+            return dispatchResult;
+        } catch (RuntimeException ex) {
+            verificationDispatchAuditService.recordFailure(target, ex.getMessage());
+            throw ex;
+        }
     }
 
     public void verifyCodeOrThrow(String target, String code) {

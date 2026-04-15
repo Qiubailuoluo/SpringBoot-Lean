@@ -76,3 +76,23 @@
 ## 6. TraceId
 
 - 响应头：`X-Trace-Id` 与失败时响应体中的 `traceId` 规则与 Book/User 模块一致。
+
+## 7. 查询最近验证码回执审计（管理）
+
+- Method: `GET`
+- URL: `{{baseUrl}}/api/audit/verification/recent?limit=20`
+- Header:
+  - `Authorization: Bearer {{accessToken}}`
+- Body: 无
+
+- 预期：`success: true`，返回最近回执记录（`deliveryId`、`channel`、`codeMasked`、`success`、`errorMessage`、`createdAt` 等）。
+
+### 7.1 常用筛选参数
+
+- `target`：按邮箱/手机号筛选（完全匹配）
+- `success`：按发送结果筛选（`true` / `false`）
+- `fromTime`、`toTime`：按时间范围筛选（ISO8601，例如 `2026-04-15T10:00:00`）
+
+示例：
+
+`GET /api/audit/verification/recent?limit=20&target=demo@example.com&success=true&fromTime=2026-04-15T00:00:00&toTime=2026-04-15T23:59:59`

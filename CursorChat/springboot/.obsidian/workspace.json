@@ -11,10 +11,14 @@
             "id": "6c36e5bdcb56ae6c",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "40-业务模块拆解/01-Book模块分层解析.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "01-Book模块分层解析"
             }
           }
         ]
@@ -90,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "40-业务模块拆解/01-Book模块分层解析.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -99,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "反向链接"
+              "title": "01-Book模块分层解析 的反向链接列表"
             }
           },
           {
@@ -108,11 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "40-业务模块拆解/01-Book模块分层解析.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "出链"
+              "title": "01-Book模块分层解析 的出链列表"
             }
           },
           {
@@ -150,12 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "40-业务模块拆解/01-Book模块分层解析.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "01-Book模块分层解析 的大纲"
             }
           }
         ],
@@ -178,6 +185,11 @@
   },
   "active": "6c36e5bdcb56ae6c",
   "lastOpenFiles": [
+    "80-测试与联调/02-Postman用例组织方式.md",
+    "80-测试与联调/01-测试分层与范围约定.md",
+    "80-测试与联调/00-本章导读.md",
+    "修改意见.md",
+    "README.md",
     "90-部署与运维/04-故障应急与回滚流程.md",
     "90-部署与运维/03-发布前检查清单.md",
     "90-部署与运维/02-部署最小流程.md",
@@ -198,11 +210,6 @@
     "30-安全与登录/01-Security.md",
     "30-安全与登录/00-本章导读.md",
     "20-异常与错误码/04-高频异常排障清单.md",
-    "20-异常与错误码/03-错误码体系与模块约定.md",
-    "20-异常与错误码/02-全局异常处理器实战说明.md",
-    "20-异常与错误码/01-异常分层与抛出原则.md",
-    "20-异常与错误码/00-本章导读.md",
-    "10-请求链路/05-统一响应与TraceId流转.md",
-    "10-请求链路/04-Mapper与SQL执行路径.md"
+    "20-异常与错误码/03-错误码体系与模块约定.md"
   ]
 }
