@@ -4,9 +4,9 @@
 建立“请求可追踪、响应结构稳定”的统一认知。
 
 ## 代码位置
-- 响应模型：`java/com/bookshop/common/response/ApiResponse.java`
-- Trace 过滤器：`java/com/bookshop/common/trace/TraceIdFilter.java`
-- 全局异常处理：`java/com/bookshop/exception/GlobalExceptionHandler.java`
+- 响应模型：`common/response/ApiResponse.java`
+- Trace 过滤器：`common/trace/TraceIdFilter.java`
+- 全局异常处理：`exception/GlobalExceptionHandler.java`
 
 ## 流转方式
 1. `TraceIdFilter` 生成 traceId，写入 MDC 与 request attribute。

@@ -1,11 +1,11 @@
-# 索引与SQL优化入门
+﻿# 索引与SQL优化入门
 
 ## 目标
 给出当前项目最实用的 SQL 优化检查点。
 
 ## 代码位置
-- `java/com/bookshop/mapper/book/BookMapper.java`
-- `java/com/bookshop/mapper/user/UserMapper.java`
+- `com/bookshop/mapper/book/BookMapper.java`
+- `com/bookshop/mapper/user/UserMapper.java`
 
 ## 基础检查项
 - 高频等值查询字段是否有索引（如用户名）。

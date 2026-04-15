@@ -4,8 +4,8 @@
 说明密码在本项目中的存储与校验策略，避免明文与弱加密风险。
 
 ## 代码位置
-- `java/com/bookshop/config/security/SecurityConfig.java`
-- `java/com/bookshop/service/login/impl/LoginServiceImpl.java`
+- `com/bookshop/config/security/SecurityConfig.java`
+- `service/login/impl/LoginServiceImpl.java`
 - `resources/sql/user_account_password_migration.sql`
 
 ## 实现现状

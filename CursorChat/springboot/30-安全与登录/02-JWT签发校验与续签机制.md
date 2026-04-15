@@ -4,9 +4,9 @@
 说明 access/refresh 双令牌在当前实现中的职责分工。
 
 ## 代码位置
-- `java/com/bookshop/service/login/JwtTokenService.java`
-- `java/com/bookshop/service/login/impl/LoginServiceImpl.java`
-- `java/com/bookshop/config/security/JwtProperties.java`
+- `com/bookshop/service/login/JwtTokenService.java`
+- `service/login/impl/LoginServiceImpl.java`
+- `config/security/JwtProperties.java`
 
 ## 令牌机制
 - 登录成功后签发 access + refresh。

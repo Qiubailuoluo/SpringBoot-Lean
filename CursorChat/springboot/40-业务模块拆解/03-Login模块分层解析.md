@@ -1,14 +1,14 @@
-# Login模块分层解析
+﻿# Login模块分层解析
 
 ## 目标
 拆解认证域模块的控制层、业务层、基础能力层协作方式。
 
 ## 代码位置
-- Controller：`java/com/bookshop/controller/login/LoginController.java`
-- Service 接口：`java/com/bookshop/service/login/LoginService.java`
-- Service 实现：`java/com/bookshop/service/login/impl/LoginServiceImpl.java`
-- JWT 服务：`java/com/bookshop/service/login/JwtTokenService.java`
-- Redis 缓存：`java/com/bookshop/service/login/TokenCacheService.java`
+- Controller：`com/bookshop/controller/login/LoginController.java`
+- Service 接口：`com/bookshop/service/login/LoginService.java`
+- Service 实现：`com/bookshop/service/login/impl/LoginServiceImpl.java`
+- JWT 服务：`com/bookshop/service/login/JwtTokenService.java`
+- Redis 缓存：`com/bookshop/service/login/TokenCacheService.java`
 
 ## 分层模式
 - Controller：接收登录/刷新/登出请求，返回标准响应。
