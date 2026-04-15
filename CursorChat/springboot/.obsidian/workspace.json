@@ -1,0 +1,208 @@
+{
+  "main": {
+    "id": "bb39eefc21434536",
+    "type": "split",
+    "children": [
+      {
+        "id": "1d2b70f6eda349f5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6c36e5bdcb56ae6c",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "bd8139a2b4232ab0",
+    "type": "split",
+    "children": [
+      {
+        "id": "4c9ee4daee8e94cb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a7a99d976db510cb",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "e076713d0a669e1f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "f5ebee1b614a1e72",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "28648a473ee4909b",
+    "type": "split",
+    "children": [
+      {
+        "id": "429866d431fe79fd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "36e9c93acc74e52b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": true,
+                "extraContext": true,
+                "sortOrder": "alphabetical",
+                "showSearch": true,
+                "searchQuery": "",
+                "backlinkCollapsed": true,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "ddcb311614193979",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "3da77aad7002b71f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "7cec34559e9fc007",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "819bacfbad2e3d38",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "6c36e5bdcb56ae6c",
+  "lastOpenFiles": [
+    "90-部署与运维/04-故障应急与回滚流程.md",
+    "90-部署与运维/03-发布前检查清单.md",
+    "90-部署与运维/02-部署最小流程.md",
+    "90-部署与运维/01-多环境配置与启动参数.md",
+    "70-日志与观测/04-APM接入预案.md",
+    "70-日志与观测/02-日志字段与脱敏规范.md",
+    "70-日志与观测/01-logback配置与环境差异.md",
+    "60-数据库与迁移/03-索引与SQL优化入门.md",
+    "40-业务模块拆解/05-新增模块标准模板.md",
+    "40-业务模块拆解/04-common层复用边界.md",
+    "40-业务模块拆解/03-Login模块分层解析.md",
+    "40-业务模块拆解/02-User模块分层解析.md",
+    "40-业务模块拆解/01-Book模块分层解析.md",
+    "30-安全与登录/05-登录鉴权时序与失败场景.md",
+    "30-安全与登录/04-密码体系与BCrypt实践.md",
+    "30-安全与登录/03-Redis令牌缓存与黑名单.md",
+    "30-安全与登录/02-JWT签发校验与续签机制.md",
+    "30-安全与登录/01-Security.md",
+    "30-安全与登录/00-本章导读.md",
+    "20-异常与错误码/04-高频异常排障清单.md",
+    "20-异常与错误码/03-错误码体系与模块约定.md",
+    "20-异常与错误码/02-全局异常处理器实战说明.md",
+    "20-异常与错误码/01-异常分层与抛出原则.md",
+    "20-异常与错误码/00-本章导读.md",
+    "10-请求链路/05-统一响应与TraceId流转.md",
+    "10-请求链路/04-Mapper与SQL执行路径.md"
+  ]
+}
