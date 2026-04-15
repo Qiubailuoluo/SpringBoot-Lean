@@ -1,5 +1,7 @@
 package com.bookshop.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 统一接口返回结构。
  * 作用：
@@ -8,14 +10,22 @@ package com.bookshop.common.response;
  *
  * @param <T> data 字段的数据类型
  */
+@Schema(description = "统一接口响应体")
 public class ApiResponse<T> {
 
+    @Schema(description = "业务码：成功通常为 SUCCESS，失败为业务错误码", example = "SUCCESS")
     private String code;
+    @Schema(description = "是否成功", example = "true")
     private boolean success;
+    @Schema(description = "响应消息", example = "查询成功")
     private String message;
+    @Schema(description = "业务数据")
     private T data;
+    @Schema(description = "毫秒时间戳（失败场景常用）", example = "1776232843177")
     private Long timestamp;
+    @Schema(description = "请求路径（失败场景常用）", example = "/api/users/1")
     private String path;
+    @Schema(description = "链路追踪ID（失败场景常用）", example = "e21656712e9c4f84ae2fdb3bfa35746b")
     private String traceId;
 
     public String getCode() {
