@@ -1,0 +1,167 @@
+{
+  "info": {
+    "_postman_id": "9f2e6f6f-5d53-4d75-9b7e-2f2be47bb001",
+    "name": "Login Baseline Reset",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Verification - Send",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"verification send success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data && body.data.code) {",
+              "    pm.collectionVariables.set(\"verifyCode\", body.data.code);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"target\": \"{{verifyTarget}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/verification/send",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "verification",
+            "send"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reset Password To Baseline",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"reset baseline success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{baselinePassword}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/password/reset",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "password",
+            "reset"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login Verify Baseline",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"baseline login success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{baselinePassword}}\",\n  \"deviceId\": \"{{deviceId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "username",
+      "value": "qiubai"
+    },
+    {
+      "key": "verifyTarget",
+      "value": "qiubai@placeholder.local"
+    },
+    {
+      "key": "verifyCode",
+      "value": ""
+    },
+    {
+      "key": "baselinePassword",
+      "value": "123456"
+    },
+    {
+      "key": "deviceId",
+      "value": "chrome-win10"
+    }
+  ]
+}

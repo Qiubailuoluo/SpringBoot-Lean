@@ -15,6 +15,7 @@
   - 用户密码使用 `user_account.password_hash`（BCrypt）校验
   - `POST /api/users` 允许匿名创建用户（用于注册/初始化账号），其余 `/api/users/**` 默认需 Bearer token
 - `Login.postman_collection.json` 已内置测试脚本：自动提取 `verifyCode`、`accessToken`、`refreshToken`，可直接 `newman run` 串行回归
+- 新增 `Login-基线恢复.postman_collection.json`：用于先把账号重置到固定密码（默认 `123456`），降低多次回归时的状态漂移
 
 ## 1. 模拟发送验证码（开发联调）
 
@@ -156,3 +157,9 @@
    - 预期：HTTP `401`，`code=LOGIN_498`
 6. `POST /api/auth/password/reset`（验证码场景）  
    - 预期：成功后旧 refresh token 失效，需要重新登录
+
+## 11. 一键稳定回归建议
+
+1. 先执行 `Login-基线恢复.postman_collection.json`（重置账号到固定密码）。
+2. 再执行 `Login.postman_collection.json`（完整链路回归）。
+3. 若验证码限流触发（`USER_460`），等待约 2 分钟后重试。
