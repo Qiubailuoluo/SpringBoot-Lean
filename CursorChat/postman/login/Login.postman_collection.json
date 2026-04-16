@@ -36,7 +36,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"target\": \"demo@example.com\"\n}"
+          "raw": "{\n  \"target\": \"{{verifyTarget}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/auth/verification/send",
@@ -219,7 +219,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{oldPassword}}\"\n}"
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{resetPassword}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/auth/password/reset",
@@ -231,6 +231,100 @@
             "auth",
             "password",
             "reset"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login - After Change",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"login after change success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data) {",
+              "    pm.collectionVariables.set(\"accessToken\", body.data.token || \"\");",
+              "    pm.collectionVariables.set(\"refreshToken\", body.data.refreshToken || \"\");",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{resetPassword}}\",\n  \"deviceId\": \"{{deviceId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login - After Reset",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"login after reset success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data) {",
+              "    pm.collectionVariables.set(\"accessToken\", body.data.token || \"\");",
+              "    pm.collectionVariables.set(\"refreshToken\", body.data.refreshToken || \"\");",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{resetPassword}}\",\n  \"deviceId\": \"{{deviceId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
           ]
         }
       }
@@ -351,6 +445,10 @@
     {
       "key": "newPassword",
       "value": "Abc123456"
+    },
+    {
+      "key": "resetPassword",
+      "value": "Abc123457"
     },
     {
       "key": "verifyTarget",
