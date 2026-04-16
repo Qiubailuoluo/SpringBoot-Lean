@@ -30,4 +30,8 @@ public class LoginResultVO {
     /** 令牌类型，固定为 Bearer。 */
     @Schema(description = "令牌类型", example = "Bearer")
     private String tokenType;
+
+    /** 当前会话设备标识。 */
+    @Schema(description = "设备标识", example = "chrome-win10")
+    private String deviceId;
 }

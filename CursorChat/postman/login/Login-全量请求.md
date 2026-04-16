@@ -5,9 +5,9 @@
 - Base URL: `http://localhost:8080`
 - 统一 Header（含 Body 的请求）: `Content-Type: application/json`
 - 当前实现为 **JWT + Redis 最小闭环**：
-  - `POST /api/auth/login` 返回 `access token` + `refresh token`
+  - `POST /api/auth/login` 返回 `access token` + `refresh token` + `deviceId`
   - `POST /api/auth/refresh` 用 refresh token 换新 access token
-  - `POST /api/auth/logout` 会将当前 access token 拉黑并清理 refresh token
+  - `POST /api/auth/logout` 会将当前 access token 拉黑并清理“当前设备”的 refresh token
 - `POST /api/auth/password/change` 修改密码后，会清理 refresh token，并使历史 access token 失效（含当前 token）
 - `POST /api/auth/password/reset` 忘记密码重置（验证码场景），重置后历史登录态失效
   - `POST /api/auth/verification/send` 发送验证码（当前按 `security.verification.mode` 走 `mock/real-stub`，返回验证码便于测试）
@@ -39,11 +39,13 @@
 ```json
 {
   "username": "qiubai",
-  "password": "123456"
+  "password": "123456",
+  "deviceId": "chrome-win10"
 }
 ```
 
-- 预期：`success: true`，返回 `data.token`、`data.refreshToken`、`data.expiresIn`、`data.tokenType=Bearer`。
+- 预期：`success: true`，返回 `data.token`、`data.refreshToken`、`data.expiresIn`、`data.tokenType=Bearer`、`data.deviceId`。
+- 说明：`deviceId` 可选；不传时默认 `web`。同一账号不同 `deviceId` 可并行登录并持有各自 refresh token。
 
 ## 3. 刷新 Token
 

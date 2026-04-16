@@ -19,4 +19,7 @@ public class LoginRequestDTO {
     @NotBlank(message = "密码不能为空")
     @Schema(description = "登录密码", example = "Abc12345")
     private String password;
+
+    @Schema(description = "设备标识（用于多端会话管理，不传则默认 web）", example = "chrome-win10")
+    private String deviceId;
 }

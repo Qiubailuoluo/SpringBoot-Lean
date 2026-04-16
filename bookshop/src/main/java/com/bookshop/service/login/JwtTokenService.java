@@ -20,6 +20,8 @@ public class JwtTokenService {
 
     public static final String TOKEN_TYPE_ACCESS = "access";
     public static final String TOKEN_TYPE_REFRESH = "refresh";
+    public static final String CLAIM_DEVICE_ID = "deviceId";
+    public static final String DEFAULT_DEVICE_ID = "web";
 
     private final JwtProperties jwtProperties;
     private final SecretKey secretKey;
@@ -31,19 +33,28 @@ public class JwtTokenService {
     }
 
     public String createAccessToken(String username) {
-        return createToken(username, TOKEN_TYPE_ACCESS, jwtProperties.getAccessExpireSeconds());
+        return createAccessToken(username, DEFAULT_DEVICE_ID);
+    }
+
+    public String createAccessToken(String username, String deviceId) {
+        return createToken(username, TOKEN_TYPE_ACCESS, jwtProperties.getAccessExpireSeconds(), deviceId);
     }
 
     public String createRefreshToken(String username) {
-        return createToken(username, TOKEN_TYPE_REFRESH, jwtProperties.getRefreshExpireSeconds());
+        return createRefreshToken(username, DEFAULT_DEVICE_ID);
     }
 
-    private String createToken(String username, String tokenType, long ttlSeconds) {
+    public String createRefreshToken(String username, String deviceId) {
+        return createToken(username, TOKEN_TYPE_REFRESH, jwtProperties.getRefreshExpireSeconds(), deviceId);
+    }
+
+    private String createToken(String username, String tokenType, long ttlSeconds, String deviceId) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(username)
                 .id(UUID.randomUUID().toString())
                 .claim("type", tokenType)
+                .claim(CLAIM_DEVICE_ID, deviceId)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(ttlSeconds)))
                 .signWith(secretKey)

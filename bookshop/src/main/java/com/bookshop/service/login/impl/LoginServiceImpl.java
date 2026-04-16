@@ -65,10 +65,11 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException(LoginErrorCode.AUTH_FORBIDDEN.getCode(), "账号已禁用，请联系管理员");
         }
 
-        String accessToken = jwtTokenService.createAccessToken(user.getUsername());
-        String refreshToken = jwtTokenService.createRefreshToken(user.getUsername());
-        tokenCacheService.cacheRefreshToken(user.getUsername(), refreshToken, jwtProperties.getRefreshExpireSeconds());
-        return buildTokenResult("登录成功", accessToken, refreshToken);
+        String deviceId = normalizeDeviceId(requestDTO.getDeviceId());
+        String accessToken = jwtTokenService.createAccessToken(user.getUsername(), deviceId);
+        String refreshToken = jwtTokenService.createRefreshToken(user.getUsername(), deviceId);
+        tokenCacheService.cacheRefreshToken(user.getUsername(), deviceId, refreshToken, jwtProperties.getRefreshExpireSeconds());
+        return buildTokenResult("登录成功", accessToken, refreshToken, deviceId);
     }
 
     @Override
@@ -84,13 +85,14 @@ public class LoginServiceImpl implements LoginService {
         }
 
         String username = claims.getSubject();
-        String cachedRefreshToken = tokenCacheService.getRefreshToken(username);
+        String deviceId = normalizeDeviceId(claims.get(JwtTokenService.CLAIM_DEVICE_ID, String.class));
+        String cachedRefreshToken = tokenCacheService.getRefreshToken(username, deviceId);
         if (cachedRefreshToken == null || !cachedRefreshToken.equals(refreshToken)) {
             throw new BusinessException(LoginErrorCode.AUTH_TOKEN_INVALID.getCode(), "刷新令牌已失效，请重新登录");
         }
 
-        String accessToken = jwtTokenService.createAccessToken(username);
-        return buildTokenResult("刷新成功", accessToken, refreshToken);
+        String accessToken = jwtTokenService.createAccessToken(username, deviceId);
+        return buildTokenResult("刷新成功", accessToken, refreshToken, deviceId);
     }
 
     @Override
@@ -105,7 +107,8 @@ public class LoginServiceImpl implements LoginService {
             }
             long ttlSeconds = Math.max(0, claims.getExpiration().toInstant().getEpochSecond() - Instant.now().getEpochSecond());
             tokenCacheService.addAccessBlacklist(claims.getId(), ttlSeconds);
-            tokenCacheService.removeRefreshToken(claims.getSubject());
+            String deviceId = normalizeDeviceId(claims.get(JwtTokenService.CLAIM_DEVICE_ID, String.class));
+            tokenCacheService.removeRefreshToken(claims.getSubject(), deviceId);
         } catch (JwtException ignored) {
             // 令牌已失效时登出无需抛错，保持幂等。
         }
@@ -128,7 +131,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         userMapper.updatePasswordByUsername(username, passwordEncoder.encode(newPassword));
-        tokenCacheService.removeRefreshToken(username);
+        tokenCacheService.removeAllRefreshTokens(username);
         tokenCacheService.markPasswordChangedAt(username, Instant.now().getEpochSecond());
         addCurrentAccessTokenToBlacklist(currentAccessToken);
     }
@@ -151,7 +154,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         userMapper.updatePasswordByUsername(username, passwordEncoder.encode(newPassword));
-        tokenCacheService.removeRefreshToken(username);
+        tokenCacheService.removeAllRefreshTokens(username);
         tokenCacheService.markPasswordChangedAt(username, Instant.now().getEpochSecond());
     }
 
@@ -171,13 +174,21 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    private LoginResultVO buildTokenResult(String message, String accessToken, String refreshToken) {
+    private LoginResultVO buildTokenResult(String message, String accessToken, String refreshToken, String deviceId) {
         LoginResultVO vo = new LoginResultVO();
         vo.setMessage(message);
         vo.setToken(accessToken);
         vo.setRefreshToken(refreshToken);
         vo.setExpiresIn(jwtTokenService.getAccessExpireSeconds());
         vo.setTokenType("Bearer");
+        vo.setDeviceId(deviceId);
         return vo;
+    }
+
+    private String normalizeDeviceId(String deviceId) {
+        if (deviceId == null || deviceId.isBlank()) {
+            return JwtTokenService.DEFAULT_DEVICE_ID;
+        }
+        return deviceId.trim();
     }
 }

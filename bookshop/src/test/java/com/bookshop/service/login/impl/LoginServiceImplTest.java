@@ -69,6 +69,7 @@ class LoginServiceImplTest {
         LoginRequestDTO dto = new LoginRequestDTO();
         dto.setUsername("qiubai");
         dto.setPassword("123456");
+        dto.setDeviceId("chrome-win10");
 
         User user = new User();
         user.setUsername("qiubai");
@@ -76,8 +77,8 @@ class LoginServiceImplTest {
         user.setStatus(1);
         when(userMapper.selectByUsername("qiubai")).thenReturn(user);
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
-        when(jwtTokenService.createAccessToken("qiubai")).thenReturn("access-token");
-        when(jwtTokenService.createRefreshToken("qiubai")).thenReturn("refresh-token");
+        when(jwtTokenService.createAccessToken("qiubai", "chrome-win10")).thenReturn("access-token");
+        when(jwtTokenService.createRefreshToken("qiubai", "chrome-win10")).thenReturn("refresh-token");
         when(jwtTokenService.getAccessExpireSeconds()).thenReturn(1800L);
 
         var result = loginService.login(dto);
@@ -85,6 +86,7 @@ class LoginServiceImplTest {
         assertEquals("access-token", result.getToken());
         assertEquals("refresh-token", result.getRefreshToken());
         assertEquals(1800L, result.getExpiresIn());
+        assertEquals("chrome-win10", result.getDeviceId());
     }
 
     @Test
@@ -133,7 +135,7 @@ class LoginServiceImplTest {
         loginService.changePassword("qiubai", "Abc12345", "Abc123456", "access-token");
 
         verify(userMapper).updatePasswordByUsername("qiubai", "new-hash");
-        verify(tokenCacheService).removeRefreshToken("qiubai");
+        verify(tokenCacheService).removeAllRefreshTokens("qiubai");
         verify(tokenCacheService).markPasswordChangedAt(eq("qiubai"), anyLong());
     }
 
@@ -151,7 +153,7 @@ class LoginServiceImplTest {
 
         verify(registrationGuardService).verifyCodeOrThrow("demo@example.com", "123456");
         verify(userMapper).updatePasswordByUsername("qiubai", "new-hash");
-        verify(tokenCacheService).removeRefreshToken("qiubai");
+        verify(tokenCacheService).removeAllRefreshTokens("qiubai");
         verify(tokenCacheService).markPasswordChangedAt(eq("qiubai"), anyLong());
     }
 

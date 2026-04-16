@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class TokenCacheService {
 
     private static final String REFRESH_PREFIX = "auth:refresh:";
+    private static final String REFRESH_DEVICE_SET_PREFIX = "auth:refresh:devices:";
     private static final String BLACKLIST_PREFIX = "auth:blacklist:";
     private static final String PASSWORD_CHANGED_AT_PREFIX = "auth:pwd-changed:";
 
@@ -23,15 +24,40 @@ public class TokenCacheService {
     }
 
     public void cacheRefreshToken(String username, String refreshToken, long ttlSeconds) {
-        redisTemplate.opsForValue().set(REFRESH_PREFIX + username, refreshToken, Duration.ofSeconds(ttlSeconds));
+        cacheRefreshToken(username, "web", refreshToken, ttlSeconds);
+    }
+
+    public void cacheRefreshToken(String username, String deviceId, String refreshToken, long ttlSeconds) {
+        redisTemplate.opsForValue().set(buildRefreshKey(username, deviceId), refreshToken, Duration.ofSeconds(ttlSeconds));
+        redisTemplate.opsForSet().add(REFRESH_DEVICE_SET_PREFIX + username, deviceId);
     }
 
     public String getRefreshToken(String username) {
-        return redisTemplate.opsForValue().get(REFRESH_PREFIX + username);
+        return getRefreshToken(username, "web");
+    }
+
+    public String getRefreshToken(String username, String deviceId) {
+        return redisTemplate.opsForValue().get(buildRefreshKey(username, deviceId));
     }
 
     public void removeRefreshToken(String username) {
-        redisTemplate.delete(REFRESH_PREFIX + username);
+        removeAllRefreshTokens(username);
+    }
+
+    public void removeRefreshToken(String username, String deviceId) {
+        redisTemplate.delete(buildRefreshKey(username, deviceId));
+        redisTemplate.opsForSet().remove(REFRESH_DEVICE_SET_PREFIX + username, deviceId);
+    }
+
+    public void removeAllRefreshTokens(String username) {
+        String deviceSetKey = REFRESH_DEVICE_SET_PREFIX + username;
+        var devices = redisTemplate.opsForSet().members(deviceSetKey);
+        if (devices != null) {
+            for (String deviceId : devices) {
+                redisTemplate.delete(buildRefreshKey(username, deviceId));
+            }
+        }
+        redisTemplate.delete(deviceSetKey);
     }
 
     public void addAccessBlacklist(String jwtId, long ttlSeconds) {
@@ -63,5 +89,9 @@ public class TokenCacheService {
         } catch (NumberFormatException ex) {
             return false;
         }
+    }
+
+    private String buildRefreshKey(String username, String deviceId) {
+        return REFRESH_PREFIX + username + ":" + deviceId;
     }
 }
