@@ -53,6 +53,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String username = claims.getSubject();
+            if (tokenCacheService.isAccessTokenIssuedBeforePasswordChanged(username, claims.getIssuedAt())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);

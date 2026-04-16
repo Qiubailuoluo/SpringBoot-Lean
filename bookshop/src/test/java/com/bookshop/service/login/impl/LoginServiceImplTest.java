@@ -2,6 +2,9 @@ package com.bookshop.service.login.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.bookshop.config.security.JwtProperties;
@@ -11,6 +14,7 @@ import com.bookshop.exception.BusinessException;
 import com.bookshop.mapper.user.UserMapper;
 import com.bookshop.service.login.JwtTokenService;
 import com.bookshop.service.login.TokenCacheService;
+import com.bookshop.service.user.RegistrationGuardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +42,9 @@ class LoginServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private RegistrationGuardService registrationGuardService;
+
     private JwtProperties jwtProperties;
 
     @InjectMocks
@@ -47,7 +54,14 @@ class LoginServiceImplTest {
     void setUp() {
         jwtProperties = new JwtProperties();
         jwtProperties.setRefreshExpireSeconds(604800);
-        loginService = new LoginServiceImpl(userMapper, jwtProperties, jwtTokenService, tokenCacheService, passwordEncoder);
+        loginService =
+                new LoginServiceImpl(
+                        userMapper,
+                        jwtProperties,
+                        jwtTokenService,
+                        tokenCacheService,
+                        passwordEncoder,
+                        registrationGuardService);
     }
 
     @Test
@@ -88,5 +102,71 @@ class LoginServiceImplTest {
 
         BusinessException ex = assertThrows(BusinessException.class, () -> loginService.login(dto));
         assertEquals("LOGIN_401", ex.getCode());
+    }
+
+    @Test
+    void changePassword_whenOldPasswordWrong_shouldThrowBusinessException() {
+        User user = new User();
+        user.setUsername("qiubai");
+        user.setPasswordHash("old-hash");
+        when(userMapper.selectByUsername("qiubai")).thenReturn(user);
+        when(passwordEncoder.matches("wrong-old", "old-hash")).thenReturn(false);
+
+        BusinessException ex =
+                assertThrows(
+                        BusinessException.class,
+                        () -> loginService.changePassword("qiubai", "wrong-old", "Abc123456", "access-token"));
+        assertEquals("LOGIN_422", ex.getCode());
+    }
+
+    @Test
+    void changePassword_whenValid_shouldUpdatePasswordAndInvalidateSession() {
+        User user = new User();
+        user.setUsername("qiubai");
+        user.setPasswordHash("old-hash");
+        when(userMapper.selectByUsername("qiubai")).thenReturn(user);
+        when(passwordEncoder.matches("Abc12345", "old-hash")).thenReturn(true);
+        when(passwordEncoder.matches("Abc123456", "old-hash")).thenReturn(false);
+        when(passwordEncoder.encode("Abc123456")).thenReturn("new-hash");
+        when(jwtTokenService.parseClaims("access-token")).thenThrow(new io.jsonwebtoken.JwtException("mock"));
+
+        loginService.changePassword("qiubai", "Abc12345", "Abc123456", "access-token");
+
+        verify(userMapper).updatePasswordByUsername("qiubai", "new-hash");
+        verify(tokenCacheService).removeRefreshToken("qiubai");
+        verify(tokenCacheService).markPasswordChangedAt(eq("qiubai"), anyLong());
+    }
+
+    @Test
+    void resetPassword_whenValid_shouldUpdatePasswordAndInvalidateSessions() {
+        User user = new User();
+        user.setUsername("qiubai");
+        user.setVerifyTarget("demo@example.com");
+        user.setPasswordHash("old-hash");
+        when(userMapper.selectByUsername("qiubai")).thenReturn(user);
+        when(passwordEncoder.matches("Abc123456", "old-hash")).thenReturn(false);
+        when(passwordEncoder.encode("Abc123456")).thenReturn("new-hash");
+
+        loginService.resetPassword("qiubai", "demo@example.com", "123456", "Abc123456");
+
+        verify(registrationGuardService).verifyCodeOrThrow("demo@example.com", "123456");
+        verify(userMapper).updatePasswordByUsername("qiubai", "new-hash");
+        verify(tokenCacheService).removeRefreshToken("qiubai");
+        verify(tokenCacheService).markPasswordChangedAt(eq("qiubai"), anyLong());
+    }
+
+    @Test
+    void resetPassword_whenVerifyTargetMismatch_shouldThrowBusinessException() {
+        User user = new User();
+        user.setUsername("qiubai");
+        user.setVerifyTarget("owner@example.com");
+        user.setPasswordHash("old-hash");
+        when(userMapper.selectByUsername("qiubai")).thenReturn(user);
+
+        BusinessException ex =
+                assertThrows(
+                        BusinessException.class,
+                        () -> loginService.resetPassword("qiubai", "other@example.com", "123456", "Abc123456"));
+        assertEquals("LOGIN_422", ex.getCode());
     }
 }

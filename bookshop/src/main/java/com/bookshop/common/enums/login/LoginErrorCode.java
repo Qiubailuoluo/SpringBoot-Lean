@@ -11,6 +11,8 @@ public enum LoginErrorCode {
     AUTH_INVALID_CREDENTIALS("LOGIN_401", "用户名或密码错误"),
     /** 对外错误码 {@code LOGIN_403}；用于被禁用账户或无权限访问。 */
     AUTH_FORBIDDEN("LOGIN_403", "当前账号无权限访问"),
+    /** 对外错误码 {@code LOGIN_422}；用于密码修改场景中的参数或校验失败。 */
+    AUTH_PASSWORD_INVALID("LOGIN_422", "密码校验失败"),
     /** 对外错误码 {@code LOGIN_498}；Token 无效、过期或被吊销。 */
     AUTH_TOKEN_INVALID("LOGIN_498", "登录态已失效，请重新登录");
 

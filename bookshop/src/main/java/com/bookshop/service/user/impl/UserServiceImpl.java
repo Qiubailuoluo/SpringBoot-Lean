@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = new User();
         user.setUsername(createDTO.getUsername());
+        user.setVerifyTarget(createDTO.getVerifyTarget());
         user.setPasswordHash(passwordEncoder.encode(createDTO.getPassword()));
         user.setDisplayName(createDTO.getDisplayName());
         // 1 表示启用状态，作为初始化默认值。

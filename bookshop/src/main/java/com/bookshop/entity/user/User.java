@@ -12,6 +12,7 @@ public class User {
 
     private Long id;
     private String username;
+    private String verifyTarget;
     private String passwordHash;
     private String displayName;
     private Integer status;

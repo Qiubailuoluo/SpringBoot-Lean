@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -16,18 +17,18 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface UserMapper {
 
-    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account ORDER BY id DESC")
+    @Select("SELECT id, username, verify_target, password_hash, display_name, status, created_at, updated_at FROM user_account ORDER BY id DESC")
     List<User> selectAll();
 
-    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE id = #{id}")
+    @Select("SELECT id, username, verify_target, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE id = #{id}")
     User selectById(Long id);
 
-    @Select("SELECT id, username, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE username = #{username}")
+    @Select("SELECT id, username, verify_target, password_hash, display_name, status, created_at, updated_at FROM user_account WHERE username = #{username}")
     User selectByUsername(String username);
 
     @Insert("""
-            INSERT INTO user_account(username, password_hash, display_name, status, created_at, updated_at)
-            VALUES(#{username}, #{passwordHash}, #{displayName}, #{status}, NOW(), NOW())
+            INSERT INTO user_account(username, verify_target, password_hash, display_name, status, created_at, updated_at)
+            VALUES(#{username}, #{verifyTarget}, #{passwordHash}, #{displayName}, #{status}, NOW(), NOW())
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(User user);
@@ -40,6 +41,14 @@ public interface UserMapper {
             WHERE id = #{id}
             """)
     int updateById(User user);
+
+    @Update("""
+            UPDATE user_account
+            SET password_hash = #{passwordHash},
+                updated_at = NOW()
+            WHERE username = #{username}
+            """)
+    int updatePasswordByUsername(@Param("username") String username, @Param("passwordHash") String passwordHash);
 
     @Delete("DELETE FROM user_account WHERE id = #{id}")
     int deleteById(Long id);

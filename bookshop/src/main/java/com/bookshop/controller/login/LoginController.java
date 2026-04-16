@@ -1,8 +1,10 @@
 package com.bookshop.controller.login;
 
 import com.bookshop.common.response.ApiResponse;
+import com.bookshop.dto.login.ChangePasswordRequestDTO;
 import com.bookshop.dto.login.LoginRequestDTO;
 import com.bookshop.dto.login.RefreshTokenRequestDTO;
+import com.bookshop.dto.login.ResetPasswordRequestDTO;
 import com.bookshop.dto.login.VerifyCodeSendRequestDTO;
 import com.bookshop.service.login.LoginService;
 import com.bookshop.service.user.RegistrationGuardService;
@@ -12,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +32,15 @@ public class LoginController {
 
     private final LoginService loginService;
     private final RegistrationGuardService registrationGuardService;
+    private final boolean exposeVerificationCode;
 
-    public LoginController(LoginService loginService, RegistrationGuardService registrationGuardService) {
+    public LoginController(
+            LoginService loginService,
+            RegistrationGuardService registrationGuardService,
+            @Value("${security.verification.expose-code:true}") boolean exposeVerificationCode) {
         this.loginService = loginService;
         this.registrationGuardService = registrationGuardService;
+        this.exposeVerificationCode = exposeVerificationCode;
     }
 
     /**
@@ -62,7 +71,9 @@ public class LoginController {
         var dispatchResult = registrationGuardService.sendCode(requestDTO.getTarget());
         VerificationSendResultVO vo = new VerificationSendResultVO();
         vo.setTarget(requestDTO.getTarget());
-        vo.setCode(dispatchResult.getCode());
+        if (exposeVerificationCode) {
+            vo.setCode(dispatchResult.getCode());
+        }
         vo.setDeliveryId(dispatchResult.getDeliveryId());
         vo.setChannel(dispatchResult.getChannel());
         vo.setMock(dispatchResult.isMock());
@@ -77,6 +88,37 @@ public class LoginController {
     public ApiResponse<Void> logout(HttpServletRequest request) {
         loginService.logout(extractAccessToken(request.getHeader("Authorization")));
         return ApiResponse.ok("登出成功");
+    }
+
+    /**
+     * 修改密码：校验旧密码后更新新密码，并使旧登录态失效。
+     */
+    @PostMapping("/password/change")
+    @Operation(summary = "修改密码并使旧登录态失效")
+    public ApiResponse<Void> changePassword(
+            @Valid @RequestBody ChangePasswordRequestDTO requestDTO,
+            Authentication authentication,
+            HttpServletRequest request) {
+        loginService.changePassword(
+                authentication.getName(),
+                requestDTO.getOldPassword(),
+                requestDTO.getNewPassword(),
+                extractAccessToken(request.getHeader("Authorization")));
+        return ApiResponse.ok("密码修改成功，请重新登录");
+    }
+
+    /**
+     * 忘记密码重置：校验验证码后更新新密码，并使历史登录态失效。
+     */
+    @PostMapping("/password/reset")
+    @Operation(summary = "重置密码（验证码场景）")
+    public ApiResponse<Void> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO requestDTO) {
+        loginService.resetPassword(
+                requestDTO.getUsername(),
+                requestDTO.getVerifyTarget(),
+                requestDTO.getVerifyCode(),
+                requestDTO.getNewPassword());
+        return ApiResponse.ok("密码重置成功，请重新登录");
     }
 
     private String extractAccessToken(String authorization) {

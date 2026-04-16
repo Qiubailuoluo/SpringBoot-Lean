@@ -111,6 +111,66 @@
       }
     },
     {
+      "name": "Change Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"oldPassword\": \"{{oldPassword}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/password/change",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "password",
+            "change"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/password/reset",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "password",
+            "reset"
+          ]
+        }
+      }
+    },
+    {
       "name": "Audit - Verification Recent",
       "request": {
         "method": "GET",
@@ -159,12 +219,28 @@
       "value": ""
     },
     {
+      "key": "username",
+      "value": "qiubai"
+    },
+    {
       "key": "refreshToken",
       "value": ""
     },
     {
+      "key": "oldPassword",
+      "value": "Abc12345"
+    },
+    {
+      "key": "newPassword",
+      "value": "Abc123456"
+    },
+    {
       "key": "verifyTarget",
       "value": "demo@example.com"
+    },
+    {
+      "key": "verifyCode",
+      "value": "123456"
     }
   ]
 }

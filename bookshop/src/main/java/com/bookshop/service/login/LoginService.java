@@ -23,4 +23,14 @@ public interface LoginService {
      * 登出。
      */
     void logout(String accessToken);
+
+    /**
+     * 修改密码（登录态）。
+     */
+    void changePassword(String username, String oldPassword, String newPassword, String currentAccessToken);
+
+    /**
+     * 重置密码（忘记密码场景）。
+     */
+    void resetPassword(String username, String verifyTarget, String verifyCode, String newPassword);
 }

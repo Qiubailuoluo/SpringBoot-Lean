@@ -9,10 +9,12 @@ import com.bookshop.mapper.user.UserMapper;
 import com.bookshop.service.login.JwtTokenService;
 import com.bookshop.service.login.LoginService;
 import com.bookshop.service.login.TokenCacheService;
+import com.bookshop.service.user.RegistrationGuardService;
 import com.bookshop.vo.login.LoginResultVO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import java.time.Instant;
+import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +24,28 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LoginServiceImpl implements LoginService {
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d\\W_]{8,20}$");
 
     private final UserMapper userMapper;
     private final JwtProperties jwtProperties;
     private final JwtTokenService jwtTokenService;
     private final TokenCacheService tokenCacheService;
     private final PasswordEncoder passwordEncoder;
+    private final RegistrationGuardService registrationGuardService;
 
     public LoginServiceImpl(
             UserMapper userMapper,
             JwtProperties jwtProperties,
             JwtTokenService jwtTokenService,
             TokenCacheService tokenCacheService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            RegistrationGuardService registrationGuardService) {
         this.userMapper = userMapper;
         this.jwtProperties = jwtProperties;
         this.jwtTokenService = jwtTokenService;
         this.tokenCacheService = tokenCacheService;
         this.passwordEncoder = passwordEncoder;
+        this.registrationGuardService = registrationGuardService;
     }
 
     @Override
@@ -102,6 +108,66 @@ public class LoginServiceImpl implements LoginService {
             tokenCacheService.removeRefreshToken(claims.getSubject());
         } catch (JwtException ignored) {
             // 令牌已失效时登出无需抛错，保持幂等。
+        }
+    }
+
+    @Override
+    public void changePassword(String username, String oldPassword, String newPassword, String currentAccessToken) {
+        User user = userMapper.selectByUsername(username);
+        if (user == null) {
+            throw new BusinessException(LoginErrorCode.AUTH_TOKEN_INVALID.getCode(), LoginErrorCode.AUTH_TOKEN_INVALID.getMessage());
+        }
+        if (user.getPasswordHash() == null || !passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "旧密码不正确");
+        }
+        if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "新密码强度不足，需8-20位且包含字母和数字");
+        }
+        if (passwordEncoder.matches(newPassword, user.getPasswordHash())) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "新密码不能与旧密码相同");
+        }
+
+        userMapper.updatePasswordByUsername(username, passwordEncoder.encode(newPassword));
+        tokenCacheService.removeRefreshToken(username);
+        tokenCacheService.markPasswordChangedAt(username, Instant.now().getEpochSecond());
+        addCurrentAccessTokenToBlacklist(currentAccessToken);
+    }
+
+    @Override
+    public void resetPassword(String username, String verifyTarget, String verifyCode, String newPassword) {
+        User user = userMapper.selectByUsername(username);
+        if (user == null) {
+            throw new BusinessException(LoginErrorCode.AUTH_INVALID_CREDENTIALS.getCode(), LoginErrorCode.AUTH_INVALID_CREDENTIALS.getMessage());
+        }
+        if (user.getVerifyTarget() == null || !user.getVerifyTarget().equals(verifyTarget)) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "验证码目标与账号不匹配");
+        }
+        registrationGuardService.verifyCodeOrThrow(verifyTarget, verifyCode);
+        if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "新密码强度不足，需8-20位且包含字母和数字");
+        }
+        if (user.getPasswordHash() != null && passwordEncoder.matches(newPassword, user.getPasswordHash())) {
+            throw new BusinessException(LoginErrorCode.AUTH_PASSWORD_INVALID.getCode(), "新密码不能与旧密码相同");
+        }
+
+        userMapper.updatePasswordByUsername(username, passwordEncoder.encode(newPassword));
+        tokenCacheService.removeRefreshToken(username);
+        tokenCacheService.markPasswordChangedAt(username, Instant.now().getEpochSecond());
+    }
+
+    private void addCurrentAccessTokenToBlacklist(String accessToken) {
+        if (accessToken == null || accessToken.isBlank()) {
+            return;
+        }
+        try {
+            Claims claims = jwtTokenService.parseClaims(accessToken);
+            if (!jwtTokenService.isTokenType(claims, JwtTokenService.TOKEN_TYPE_ACCESS)) {
+                return;
+            }
+            long ttlSeconds = Math.max(0, claims.getExpiration().toInstant().getEpochSecond() - Instant.now().getEpochSecond());
+            tokenCacheService.addAccessBlacklist(claims.getId(), ttlSeconds);
+        } catch (JwtException ignored) {
+            // 当前 token 非法时无需额外处理，改密结果仍应成功返回。
         }
     }
 

@@ -26,6 +26,8 @@ security:
   verification:
     # mock: 本地随机码联调；real: 真实渠道占位（real-stub，后续接厂商）
     mode: mock
+    # 是否在响应体中返回验证码明文（仅建议开发联调开启）。
+    expose-code: true
 
 springdoc:
   api-docs:

@@ -5,3 +5,7 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:change-me}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+security:
+  verification:
+    expose-code: false
