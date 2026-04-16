@@ -7,6 +7,25 @@
   "item": [
     {
       "name": "Verification - Send",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"verification send success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data && body.data.code) {",
+              "    pm.collectionVariables.set(\"verifyCode\", body.data.code);",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -35,6 +54,26 @@
     },
     {
       "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"login success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data) {",
+              "    pm.collectionVariables.set(\"accessToken\", body.data.token || \"\");",
+              "    pm.collectionVariables.set(\"refreshToken\", body.data.refreshToken || \"\");",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -45,7 +84,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"qiubai\",\n  \"password\": \"123456\"\n}"
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{oldPassword}}\",\n  \"deviceId\": \"{{deviceId}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/auth/login",
@@ -62,6 +101,25 @@
     },
     {
       "name": "Refresh Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"refresh success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});",
+              "var body = pm.response.json();",
+              "if (body && body.data && body.data.token) {",
+              "    pm.collectionVariables.set(\"accessToken\", body.data.token);",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -88,30 +146,22 @@
       }
     },
     {
-      "name": "Logout",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{accessToken}}"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/api/auth/logout",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "auth",
-            "logout"
-          ]
-        }
-      }
-    },
-    {
       "name": "Change Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"change password success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -144,6 +194,21 @@
     },
     {
       "name": "Reset Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"reset password success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -154,7 +219,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}"
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"verifyTarget\": \"{{verifyTarget}}\",\n  \"verifyCode\": \"{{verifyCode}}\",\n  \"newPassword\": \"{{oldPassword}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/auth/password/reset",
@@ -172,6 +237,21 @@
     },
     {
       "name": "Audit - Verification Recent",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"audit query success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [
@@ -204,6 +284,44 @@
               "key": "success",
               "value": "true"
             }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"logout success\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
           ]
         }
       }
@@ -241,6 +359,10 @@
     {
       "key": "verifyCode",
       "value": "123456"
+    },
+    {
+      "key": "deviceId",
+      "value": "chrome-win10"
     }
   ]
 }

@@ -14,6 +14,7 @@
   - Redis 默认连接 `127.0.0.1:6379`（当前无密码）
   - 用户密码使用 `user_account.password_hash`（BCrypt）校验
   - `POST /api/users` 允许匿名创建用户（用于注册/初始化账号），其余 `/api/users/**` 默认需 Bearer token
+- `Login.postman_collection.json` 已内置测试脚本：自动提取 `verifyCode`、`accessToken`、`refreshToken`，可直接 `newman run` 串行回归
 
 ## 1. 模拟发送验证码（开发联调）
 
