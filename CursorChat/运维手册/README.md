@@ -9,6 +9,7 @@
 - `../conventions/ES与Kibana本地安装接入教程.md`：ES/Kibana/Filebeat 通用接入教程
 - `../conventions/项目测试与架构概览.md`：当前项目测试状态与技术架构概览
 - `../conventions/演进路线图.md`：后续优先级（当前优先可观测与运维可视化）
+- `../conventions/阶段复盘-认证闭环与可观测落地.md`：本阶段建设成果总览（认证、测试、运维、文档）
 
 ## 2. 建议阅读顺序
 
