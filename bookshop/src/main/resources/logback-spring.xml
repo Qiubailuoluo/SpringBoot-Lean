@@ -2,7 +2,7 @@
 <configuration>
     <property name="LOG_DIR" value="${LOG_DIR:-logs}"/>
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [traceId=%X{traceId:-}] - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [traceId=%X{traceId:-} username=%X{username:-anonymous} eventType=%X{eventType:-} method=%X{method:-} path=%X{path:-} status=%X{status:-} latencyMs=%X{latencyMs:-}] - %msg%n"/>
 
     <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
