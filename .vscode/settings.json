@@ -1,0 +1,7 @@
+{
+  "java.jdt.ls.java.home": "D:/My_download/JDK17",
+  "terminal.integrated.env.windows": {
+    "JAVA_HOME": "D:/My_download/JDK17",
+    "Path": "D:/My_download/JDK17/bin;${env:Path}"
+  }
+}
