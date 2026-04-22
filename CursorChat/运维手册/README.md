@@ -5,6 +5,7 @@
 ## 1. 快速入口
 
 - `启动步骤.md`：本地环境启动顺序、验证命令、停止顺序（主文档）
+- `Kibana看板创建步骤与KQL速查.md`：接口性能/用户操作看板实操与KQL模板
 - `../conventions/Elastic-9.1.2本地部署实操手册（Windows）.md`：Elastic 9.1.2 安装与接入步骤
 - `../conventions/ES与Kibana本地安装接入教程.md`：ES/Kibana/Filebeat 通用接入教程
 - `../conventions/项目测试与架构概览.md`：当前项目测试状态与技术架构概览
